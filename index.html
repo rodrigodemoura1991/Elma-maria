@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Meu Treino — Musculação</title>
+<link rel="manifest" href="manifest.webmanifest?v=20260828mod1">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css?v=20260828mod1">
+</head>
+<body>
+<header class="top"><div class="topin"><div class="brand"><div class="brandmark">🏋️</div><div><strong>MEU TREINO</strong><small>MUSCULAÇÃO • PROGRESSÃO</small></div></div><div id="cloudStatus" class="status">☁ Carregando...</div></div></header>
+<main class="main"><div id="app"></div></main>
+<script>
+(async()=>{try{if('serviceWorker' in navigator){const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()))}if(window.caches){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}}catch(e){}})();
+</script>
+<script src="exercise-guides.js?v=20260828mod1"></script>
+<script src="app.js?v=20260828mod1"></script>
+<script src="coach-live.js?v=20260828mod1"></script>
+<script src="session-state-fix.js?v=20260828mod1"></script>
+<script src="history-edit-modal.js?v=20260828mod1"></script>
+<script src="history-cloud-save-fix.js?v=20260828mod1"></script>
+</body>
+</html>

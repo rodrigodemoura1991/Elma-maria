@@ -1,0 +1,12 @@
+{
+  "name": "Meu Treino",
+  "short_name": "Treino",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f4f6",
+  "theme_color": "#ff7e00",
+  "lang": "pt-BR",
+  "icons": [
+    {"src":"https://www.emoji.family/api/emojis/1f3cb-fe0f/noto/png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}

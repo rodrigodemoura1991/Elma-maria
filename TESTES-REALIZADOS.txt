@@ -1,0 +1,51 @@
+MEU TREINO — TESTE OFFLINE FINAL
+
+Data: 28/08/2026
+
+1. JavaScript
+- Todos os arquivos .js passaram no node --check.
+
+2. Cronômetro de descanso — correção definitiva
+- O cronômetro de descanso é acionado automaticamente ao preencher uma repetição válida em QUALQUER série.
+- O acionamento ocorre pelo evento oninput, sem depender de blur, onchange ou Enter.
+- A repetição é salva no rascunho antes de agendar o descanso.
+- O descanso NÃO depende de a carga (kg) estar preenchida.
+- Removida a busca por `.exercise:nth-of-type(...)` que podia apontar para a série errada por causa do `.sethead`.
+- Se já houver um descanso rodando e uma nova série for registrada, o cronômetro é reiniciado com o tempo configurado daquele exercício.
+- Debounce de 350 ms evita iniciar enquanto o usuário ainda está digitando um número de dois dígitos.
+- O botão manual de descanso continua funcionando.
+- O cronômetro geral continua iniciando ao registrar repetição.
+
+3. Teste automatizado do fluxo do descanso
+- Simulado o preenchimento da repetição sem carga.
+- Confirmado: repetição registrada, salvamento acionado, cronômetro geral acionado e `startRest(..., automatic=true)` chamado.
+- Resultado: PASSOU.
+
+4. Peso levantado
+- Na tela do treino, “Toneladas” foi substituído por “Peso levantado”.
+- O valor é exibido diretamente em kg.
+- No histórico, o volume exibido também está em kg.
+- Nos relatórios, os valores visíveis passaram para kg e a seção passou a se chamar “Peso levantado por treino”.
+- Os valores internos de toneladas podem continuar armazenados para compatibilidade, mas não são usados na interface.
+
+5. Coach IA
+- Cada exercício continua usando o último treino salvo do mesmo exercício como referência.
+- Exibe cargas e repetições série por série.
+- Calcula média de repetições e volume do exercício.
+- Compara carga/volume com o treino anterior quando disponível.
+- Classifica orientação: aumentar carga, aumentar reps, consolidar, evolução, atenção ou primeiro registro.
+- Mostra a data da última sessão salva.
+- Atualiza a análise enquanto os dados da sessão atual são alterados.
+
+6. Offline
+- O projeto abre localmente sem depender do Supabase para renderizar a tela principal.
+- Os dados locais continuam disponíveis sem internet.
+
+7. Alterações anteriores preservadas
+- Pêndulo com imagem própria.
+- Miniaturas sem corte (contain).
+- Abdominal no Cross na quarta.
+- Agachamento Hack na sexta.
+- Exercícios 6 e 10 removidos da sexta.
+- Panturrilha sentado no sábado.
+- Progressão por aparelho/gráfico removidos.
