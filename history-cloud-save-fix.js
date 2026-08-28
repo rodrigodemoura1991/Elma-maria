@@ -39,10 +39,10 @@ function installCloudEditSave(){
         target.tonnageKg=typeof volumeForLog==='function'?volumeForLog(target):target.tonnageKg;
         target.tonnes=(Number(target.tonnageKg)||0)/1000;
         try{
-          if(!sb)throw new Error('Supabase não está conectado.');
+          if(!sb)throw new Error('Firebase não está conectado.');
           const sessionResult=await sb.auth.getSession();
           const session=sessionResult?.data?.session;
-          if(!session?.user?.id)throw new Error('Sua sessão do Supabase não está ativa. Entre novamente em Dados.');
+          if(!session?.user?.id)throw new Error('Sua sessão do Firebase não está ativa. Entre novamente em Dados.');
           user=session.user;
           btn.disabled=true;btn.textContent='SALVANDO...';
           const {error}=await sb.from('workout_logs').upsert({user_id:user.id,log_key:CLOUD_PREFIX+k,day:target.day,workout_date:target.date,payload:target,updated_at:new Date().toISOString()},{onConflict:'user_id,log_key'});
@@ -56,7 +56,7 @@ function installCloudEditSave(){
         }catch(err){
           console.error('history edit cloud save',err);
           setStatus('⚠ Não salvo na nuvem');
-          alert('Não foi possível salvar no Supabase.\n\n'+(err?.message||err));
+          alert('Não foi possível salvar no Firebase.\n\n'+(err?.message||err));
         }finally{btn.disabled=false;btn.textContent='✓ Salvar alterações'}
       },true);
     },0);
