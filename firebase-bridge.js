@@ -68,12 +68,15 @@
           const batch=this.db.batch();snap.docs.forEach(d=>batch.delete(d.ref));await batch.commit();
           return {data:null,error:null};
         }
-        if(this._order){q=q.orderBy(this._order.field,this._order.opts?.ascending===false?'desc':'asc');}
         const snap=await q.get();
         let rows=snap.docs.map(d=>d.data());
         for(const c of this._conditions.filter(c=>c.op==='like')){
           const prefix=String(c.pattern||'').replace(/%$/,'');
           rows=rows.filter(r=>String(r[c.field]||'').startsWith(prefix));
+        }
+        if(this._order){
+          const field=this._order.field, desc=this._order.opts?.ascending===false;
+          rows.sort((a,b)=>{const av=a[field]??'',bv=b[field]??'';if(av===bv)return 0;return (av<bv?-1:1)*(desc?-1:1)});
         }
         return {data:rows,error:null};
       }catch(error){console.error('Firebase bridge:',error);return {data:null,error};}
