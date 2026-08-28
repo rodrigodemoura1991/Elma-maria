@@ -36,12 +36,12 @@
       },
       from(name){
         if(name!==COLLECTION) throw new Error('Coleção não suportada: '+name);
-        return new CollectionAdapter(db);
+        return new CollectionAdapter(db,auth);
       }
     };
   }
   class CollectionAdapter{
-    constructor(db){this.db=db;this._mode='';this._conditions=[];this._order=null;this._payload=null;this._conflict=null;}
+    constructor(db,auth){this.db=db;this.auth=auth;this._mode='';this._conditions=[];this._order=null;this._payload=null;this._conflict=null;}
     select(){this._mode='select';return this;}
     like(field,pattern){this._conditions.push({op:'like',field,pattern});return this;}
     order(field,opts){this._order={field,opts};return this;}
@@ -51,23 +51,23 @@
     then(resolve,reject){return this._execute().then(resolve,reject);}
     async _execute(){
       try{
+        const currentUser=this.auth.currentUser;
+        if(!currentUser) throw new Error('Usuário não autenticado.');
         if(this._mode==='upsert'){
           const p=this._payload;
-          const userId=p.user_id;
+          if(p.user_id!==currentUser.uid) throw new Error('Registro pertence a outro usuário.');
           const logKey=p.log_key;
-          const id=encodeURIComponent(userId+'__'+logKey);
+          const id=encodeURIComponent(currentUser.uid+'__'+logKey);
           await this.db.collection(COLLECTION).doc(id).set({...p,_docId:id},{merge:true});
           return {data:p,error:null};
         }
+        let q=this.db.collection(COLLECTION).where('user_id','==',currentUser.uid);
+        this._conditions.filter(c=>c.op==='eq' && c.field!=='user_id').forEach(c=>{q=q.where(c.field,'==',c.value)});
         if(this._mode==='delete'){
-          let q=this.db.collection(COLLECTION);
-          this._conditions.filter(c=>c.op==='eq').forEach(c=>{q=q.where(c.field,'==',c.value)});
           const snap=await q.get();
           const batch=this.db.batch();snap.docs.forEach(d=>batch.delete(d.ref));await batch.commit();
           return {data:null,error:null};
         }
-        let q=this.db.collection(COLLECTION);
-        this._conditions.filter(c=>c.op==='eq').forEach(c=>{q=q.where(c.field,'==',c.value)});
         if(this._order){q=q.orderBy(this._order.field,this._order.opts?.ascending===false?'desc':'asc');}
         const snap=await q.get();
         let rows=snap.docs.map(d=>d.data());
