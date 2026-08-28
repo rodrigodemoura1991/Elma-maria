@@ -16,7 +16,13 @@
     return {
       auth:{
         async getSession(){
-          return {data:{session:auth.currentUser?{user:normalizeUser(auth.currentUser)}:null},error:null};
+          const current=await new Promise(resolve=>{
+            if(auth.currentUser){resolve(auth.currentUser);return;}
+            let unsub=null;
+            const timer=setTimeout(()=>{try{unsub?.()}catch(e){}resolve(auth.currentUser||null)},2000);
+            unsub=auth.onAuthStateChanged(u=>{clearTimeout(timer);try{unsub?.()}catch(e){}resolve(u||null)});
+          });
+          return {data:{session:current?{user:normalizeUser(current)}:null},error:null};
         },
         async signInWithPassword({email,password}){
           try{const c=await auth.signInWithEmailAndPassword(email,password);return {data:{user:normalizeUser(c.user)},error:null};}
